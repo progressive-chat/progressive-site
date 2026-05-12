@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Progressive Chat</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📈</text></svg>">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a160a;
+            color: #e0e8e0;
+        }
+
+        /* ── Hero ─────────────────────────────── */
+        .hero {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: radial-gradient(ellipse at 50% 40%, #0f2810 0%, #060e06 100%);
+        }
+
+        .hero svg.chart {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .hero-overlay {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .hero-overlay h2 {
+            font-size: clamp(1.25rem, 3vw, 2rem);
+            font-weight: 600;
+            color: #b0d0b0;
+            letter-spacing: 0.02em;
+            margin-bottom: 0.25rem;
+        }
+
+        .hero-overlay h1 {
+            font-size: clamp(2.5rem, 7vw, 5rem);
+            font-weight: 900;
+            background: linear-gradient(135deg, #34d399, #10b981, #059669);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.1;
+        }
+
+        .hero-overlay p {
+            font-size: clamp(1rem, 2.5vw, 1.35rem);
+            color: #88a888;
+            margin-top: 1rem;
+            max-width: 500px;
+            margin-inline: auto;
+        }
+
+        .scroll-hint {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+            animation: bounce 2s infinite;
+        }
+
+        .scroll-hint svg {
+            width: 28px;
+            height: 28px;
+            color: #34d399;
+            opacity: 0.6;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(8px); }
+        }
+
+        /* ── Features ─────────────────────────── */
+        .features {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 6rem 2rem;
+        }
+
+        .features-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .features-header h3 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #34d399, #10b981);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.75rem;
+        }
+
+        .features-header .tagline {
+            color: #668866;
+            font-size: 1.1rem;
+        }
+
+        .feature-list {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .feature {
+            display: flex;
+            gap: 1.25rem;
+            padding: 1.5rem;
+            background: rgba(16, 40, 16, 0.5);
+            border: 1px solid rgba(52, 211, 153, 0.12);
+            border-radius: 16px;
+            transition: border-color 0.3s, background 0.3s;
+        }
+
+        .feature:hover {
+            border-color: rgba(52, 211, 153, 0.35);
+            background: rgba(16, 40, 16, 0.8);
+        }
+
+        .feature-icon {
+            flex-shrink: 0;
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: rgba(5, 150, 105, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+        }
+
+        .feature-text h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.35rem;
+            color: #d0e0d0;
+        }
+
+        .feature-text p {
+            color: #779977;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .feature-text code {
+            background: rgba(5, 150, 105, 0.15);
+            color: #34d399;
+            padding: 0.15em 0.4em;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        .cta {
+            text-align: center;
+            margin-top: 4rem;
+        }
+
+        .cta p {
+            color: #779977;
+            margin-bottom: 1.5rem;
+            font-size: 1.05rem;
+        }
+
+        .cta a {
+            display: inline-block;
+            background: linear-gradient(135deg, #059669, #10b981);
+            color: #fff;
+            text-decoration: none;
+            padding: 0.85rem 2.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 0 30px rgba(5, 150, 105, 0.25);
+        }
+
+        .cta a:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 45px rgba(5, 150, 105, 0.4);
+        }
+
+        /* ── Footer ───────────────────────────── */
+        footer {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: #446644;
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(52, 211, 153, 0.08);
+        }
+
+        footer nav {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        footer a {
+            color: #559955;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        footer a:hover {
+            color: #34d399;
+        }
+
+        footer .motto {
+            color: #446644;
+            font-style: italic;
+        }
+
+        /* ── Responsive ───────────────────────── */
+        @media (max-width: 600px) {
+            .feature {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ═══════════ HERO ═══════════ -->
+    <section class="hero">
+        <svg class="chart" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <linearGradient id="lineGrad" x1="0" y1="1" x2="1" y2="0">
+                    <stop offset="0%" stop-color="#ef4444"/>
+                    <stop offset="100%" stop-color="#f87171"/>
+                </linearGradient>
+                <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="rgba(239,68,68,0.15)"/>
+                    <stop offset="100%" stop-color="rgba(239,68,68,0.0)"/>
+                </linearGradient>
+                <filter id="glow">
+                    <feGaussianBlur stdDeviation="4" result="blur"/>
+                    <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                </filter>
+            </defs>
+
+            <!-- Grid lines -->
+            <g stroke="rgba(52, 211, 153, 0.06)" stroke-width="1">
+                <line x1="0" y1="100" x2="1200" y2="100"/>
+                <line x1="0" y1="200" x2="1200" y2="200"/>
+                <line x1="0" y1="300" x2="1200" y2="300"/>
+                <line x1="0" y1="400" x2="1200" y2="400"/>
+                <line x1="0" y1="500" x2="1200" y2="500"/>
+                <line x1="0" y1="600" x2="1200" y2="600"/>
+                <line x1="0" y1="700" x2="1200" y2="700"/>
+            </g>
+
+            <!-- Data points and line -->
+            <!-- Bottom-left to top-right rising trend -->
+            <polyline
+                points="60,680 180,620 280,570 360,540 460,480 540,450 640,380 720,350 820,280 900,240 1000,180 1100,140 1160,120"
+                fill="none"
+                stroke="url(#lineGrad)"
+                stroke-width="4"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                filter="url(#glow)"
+            />
+
+            <!-- Area fill under the line -->
+            <polygon
+                points="60,680 180,620 280,570 360,540 460,480 540,450 640,380 720,350 820,280 900,240 1000,180 1100,140 1160,120 1160,800 60,800"
+                fill="url(#areaGrad)"
+            />
+
+            <!-- Data dots -->
+            <g fill="#ef4444">
+                <circle cx="60"  cy="680" r="5"/>
+                <circle cx="180" cy="620" r="5"/>
+                <circle cx="280" cy="570" r="5"/>
+                <circle cx="360" cy="540" r="5"/>
+                <circle cx="460" cy="480" r="5"/>
+                <circle cx="540" cy="450" r="5"/>
+                <circle cx="640" cy="380" r="5"/>
+                <circle cx="720" cy="350" r="5"/>
+                <circle cx="820" cy="280" r="5"/>
+                <circle cx="900" cy="240" r="5"/>
+                <circle cx="1000" cy="180" r="5"/>
+                <circle cx="1100" cy="140" r="5"/>
+                <circle cx="1160" cy="120" r="5"/>
+            </g>
+        </svg>
+
+        <div class="hero-overlay">
+            <h2>Progressive Chat</h2>
+            <h1>The chat client<br>you've been dreaming of.</h1>
+            <p>Fast. Functional. Progressive.</p>
+        </div>
+
+        <div class="scroll-hint" aria-hidden="true">
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+            </svg>
+        </div>
+    </section>
+
+    <!-- ═══════════ FEATURES ═══════════ -->
+    <section class="features" id="features">
+        <div class="features-header">
+            <h3>Not just a Matrix client</h3>
+            <p class="tagline">Progressive is a multi-functional chat application aiming for uncompromising quality.</p>
+        </div>
+
+        <div class="feature-list">
+            <div class="feature">
+                <div class="feature-icon">⚡</div>
+                <div class="feature-text">
+                    <h4>C++ Native Core</h4>
+                    <p>Built on a fork of Element Classic, rewritten in C++ for performance. Documented, extended, and continuously improved. The goal is pure native code under the hood — snappy, lean, and reliable.</p>
+                </div>
+            </div>
+
+            <div class="feature">
+                <div class="feature-icon">📅</div>
+                <div class="feature-text">
+                    <h4>Jump to Date</h4>
+                    <p>Use <code>/jumptodate</code> to instantly navigate to messages from a specific date. Never lose context again — jump precisely to the conversation point you need.</p>
+                </div>
+            </div>
+
+            <div class="feature">
+                <div class="feature-icon">😄</div>
+                <div class="feature-text">
+                    <h4>Rich Emoji Reactions</h4>
+                    <p>See exactly who reacted with which emoji — no guesswork. A detailed reaction breakdown helps you read the room at a glance.</p>
+                </div>
+            </div>
+
+            <div class="feature">
+                <div class="feature-icon">🔒</div>
+                <div class="feature-text">
+                    <h4>Reliable Connectivity</h4>
+                    <p>Server connections hardened with patches from the <strong>Faraday Android</strong> project. Connect securely and stay connected even in challenging network conditions.</p>
+                </div>
+            </div>
+
+            <div class="feature">
+                <div class="feature-icon">🧩</div>
+                <div class="feature-text">
+                    <h4>Extensible by Design</h4>
+                    <p>Built to be flexible and to grow. Whether it's custom integrations, plugins, or entirely new workflows — Progressive was designed to adapt.</p>
+                </div>
+            </div>
+
+            <div class="feature">
+                <div class="feature-icon">🤝</div>
+                <div class="feature-text">
+                    <h4>End-to-End Encryption</h4>
+                    <p>Full Matrix E2EE support out of the box. Your conversations stay yours — private, secure, and compliant with the Matrix protocol.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="cta">
+            <p>This project will take months to mature — and we'd love your help. Whether you write C++, document features, or report bugs, every contribution matters.</p>
+            <a href="https://github.com/progressive-chat/progressive-android">Contribute on GitHub</a>
+        </div>
+    </section>
+
+    <!-- ═══════════ FOOTER ═══════════ -->
+    <footer>
+        <nav>
+            <a href="https://github.com/progressive-chat/progressive-android">GitHub</a>
+            <a href="https://progressive.chat">progressive.chat</a>
+        </nav>
+        <p class="motto">Progressive Chat — a chainmail for your messages</p>
+    </footer>
+
+</body>
+</html>
