@@ -1,5 +1,7 @@
 # Progressive Chat — Website
 
+> **Note:** This is a feature-branch repository. The primary development happens in [progressive-android](https://github.com/progressive-chat/progressive-android) — the main repository of the Progressive Chat project.
+
 Landing page for [Progressive Chat](https://github.com/progressive-chat/progressive-android) — a fast, functional, progressive Matrix client.
 
 ## About
